@@ -1,19 +1,43 @@
-import { Box } from "@mui/material";
-import React from "react";
+import { Box, Tabs, Tab, Typography, useTheme, AppBar } from "@mui/material";
+import React, { useState } from "react";
+import SwipeableViews from "react-swipeable-views";
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: number;
+  value: number;
+}
 
 const Sidebar = () => {
-  return (
-    <Box
-      sx={{
-        ml: "10px",
-        borderLeft: "1px solid",
-        borderColor: "divider",
-        bgcolor: "#101418",
-      }}
-    >
-      Sidebar
-    </Box>
-  );
+  return <div>Sidebar</div>;
 };
 
 export default Sidebar;
+
+// function TabPanel(props: TabPanelProps) {
+//   const { children, value, index, ...other } = props;
+
+//   return (
+//     <div
+//       role="tabpanel"
+//       hidden={value !== index}
+//       id={`full-width-tabpanel-${index}`}
+//       aria-labelledby={`full-width-tab-${index}`}
+//       {...other}
+//     >
+//       {value === index && (
+//         <Box sx={{ p: 3 }}>
+//           <Typography>{children}</Typography>
+//         </Box>
+//       )}
+//     </div>
+//   );
+// }
+
+// const Sidebar = () => {
+//   >
+//   );
+// };
+
+// export default Sidebar;
