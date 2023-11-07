@@ -13,11 +13,7 @@ import "reactflow/dist/style.css";
 import VideoNode from "@/features/Canvas/components/Nodes/VideoNode";
 import AudioNode from "@/features/Canvas/components/Nodes/AudioNode";
 import ImageNode from "@/features/Canvas/components/Nodes/ImageNode";
-
-const initialNodes = [
-  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
-];
+import useCanvasStore from "@/store/useCanvasStore";
 
 const nodeTypes = {
   video: VideoNode,
@@ -25,21 +21,14 @@ const nodeTypes = {
   image: ImageNode,
 };
 
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 const getId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;
 
 const Canvas = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
+  const { edges, nodes, onConnect, onEdgesChange, onNodesChange, onNodeAdded } =
+    useCanvasStore();
   const reactFlowWrapper = useRef(null);
 
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-
-  const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
-    []
-  );
 
   const onDragOver = useCallback((event: any) => {
     event.preventDefault();
@@ -70,7 +59,7 @@ const Canvas = () => {
         data: { label: `${type} node` },
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      onNodeAdded(newNode);
     },
     [reactFlowInstance]
   );
