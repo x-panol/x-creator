@@ -14,6 +14,9 @@ import VideoNode from "@/features/Canvas/components/Nodes/VideoNode";
 import AudioNode from "@/features/Canvas/components/Nodes/AudioNode";
 import ImageNode from "@/features/Canvas/components/Nodes/ImageNode";
 import useCanvasStore from "@/store/useCanvasStore";
+import VideoEditor from "@/features/Canvas/components/SideNav/VideoEditor";
+import AudoiEditor from "@/features/Canvas/components/SideNav/AudoiEditor";
+import ImageEditor from "@/features/Canvas/components/SideNav/ImageEditor";
 
 const nodeTypes = {
   video: VideoNode,
@@ -24,8 +27,15 @@ const nodeTypes = {
 const getId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;
 
 const Canvas = () => {
-  const { edges, nodes, onConnect, onEdgesChange, onNodesChange, onNodeAdded } =
-    useCanvasStore();
+  const {
+    edges,
+    nodes,
+    selectedNode,
+    onConnect,
+    onEdgesChange,
+    onNodesChange,
+    onNodeAdded,
+  } = useCanvasStore();
   const reactFlowWrapper = useRef(null);
 
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -34,6 +44,21 @@ const Canvas = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
+
+  const renderSideNav = () => {
+    const node = nodes.find((node) => selectedNode === node.id);
+    if (!node) return;
+    switch (node?.type) {
+      case "video":
+        return <VideoEditor />;
+      case "audio":
+        return <AudoiEditor />;
+      case "image":
+        return <ImageEditor />;
+      default:
+        return null;
+    }
+  };
 
   const onDrop = useCallback(
     (event: any) => {
@@ -99,10 +124,10 @@ const Canvas = () => {
           borderLeft: "1px solid",
           borderColor: "divider",
           bgcolor: "#101418",
-          width: "300px",
+          width: "350px",
         }}
       >
-        s
+        {renderSideNav()}
       </Box>
     </Box>
   );

@@ -31,7 +31,7 @@ const NodeItems = () => {
         mr: "10px",
         borderRight: "1px solid",
         borderColor: "divider",
-        width: "300px",
+        width: "250px",
         overflow: "hidden",
       }}
     >

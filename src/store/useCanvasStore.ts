@@ -11,6 +11,7 @@ type CanvasStore = {
     onNodeAdded: (node: Node) => void;
     onConnect: OnConnect;
     onNodeSelected: (key: string | undefined) => void;
+    onNodeDataUpdated: (node: Node) => void;
 };
 
 const useDemoStore = create<CanvasStore>((set, get) => ({
@@ -38,6 +39,13 @@ const useDemoStore = create<CanvasStore>((set, get) => ({
             selectedNode: node.id
         });
 
+    },
+    onNodeDataUpdated: (newNode: Node) => {
+        set({
+            nodes: get().nodes.map((node) =>
+                node.id === newNode.id ? newNode : node
+            ),
+        });
     },
     onNodeSelected: (value: string | undefined) => {
         set({

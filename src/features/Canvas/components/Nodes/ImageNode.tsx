@@ -32,7 +32,7 @@ const ImageNode = (props: any) => {
         <DeleteIcon />
       </IconButton>
       <Handle type="source" id="left" position={Position.Left} />
-      <Handle type="target" id="rright" position={Position.Right} />
+      <Handle type="target" id="right" position={Position.Right} />
       <Handle type="target" id="bottom" position={Position.Bottom} />
       <Handle type="source" id="top" position={Position.Top} />
     </Box>

@@ -2,10 +2,11 @@ import { useLoader } from "@react-three/fiber";
 import React from "react";
 import { BackSide, TextureLoader } from "three";
 
-const EqImageViewer = () => {
+const EqImageViewer = ({ image }: { image?: string }) => {
   const colorMap = useLoader(
     TextureLoader,
-    "https://pchen66.github.io/Panolens/examples/asset/textures/equirectangular/field.jpg"
+    image ||
+      "https://pchen66.github.io/Panolens/examples/asset/textures/equirectangular/field.jpg"
   );
   return (
     <>

@@ -20,11 +20,11 @@ type NodeDataProps = {
 };
 
 const PanormaViewr = () => {
-  const { selectedNode, nodes, edges } = useCanvasStore();
+  const { selectedNode, nodes, edges, onNodeSelected } = useCanvasStore();
   const [nodeData, setNodeData] = React.useState<NodeDataProps>();
+  const node = nodes.find((node) => node.id == selectedNode);
 
   useEffect(() => {
-    const node = nodes.find((node) => node.id == selectedNode);
     const left = edges.find(
       (edge) => edge.source === selectedNode && edge.sourceHandle === "left"
     );
@@ -37,24 +37,21 @@ const PanormaViewr = () => {
     const back = edges.find(
       (edge) => edge.target === selectedNode && edge.targetHandle === "bottom"
     );
-    console.log(node);
-    console.log(selectedNode);
-    console.log(front);
+
     setNodeData({
+      ...nodeData,
       left: left?.target,
       right: right?.source,
       front: front?.target,
       back: back?.source,
-      ...nodeData,
     });
-    console.log(nodeData);
   }, [selectedNode, edges]);
 
   const colorMap = useLoader(
     TextureLoader,
     "https://pchen66.github.io/Panolens/examples/asset/textures/equirectangular/field.jpg"
   );
-
+  console.log(nodeData);
   return (
     <Box sx={{ width: "100%", height: "100%", display: "flex" }}>
       <Canvas
@@ -67,11 +64,31 @@ const PanormaViewr = () => {
       >
         {nodeData && (
           <>
-            <EqImageViewer />
-            {nodeData?.front && <Arrow {...arrows.front} />}
-            {nodeData?.back && <Arrow {...arrows.back} />}
-            {nodeData?.left && <Arrow {...arrows.left} />}
-            {nodeData?.right && <Arrow {...arrows.right} />}
+            <EqImageViewer image={node?.data.imageURL} />
+            {nodeData?.front && (
+              <Arrow
+                {...arrows.front}
+                onClick={() => onNodeSelected(nodeData.front)}
+              />
+            )}
+            {nodeData?.back && (
+              <Arrow
+                {...arrows.back}
+                onClick={() => onNodeSelected(nodeData.back)}
+              />
+            )}
+            {nodeData?.left && (
+              <Arrow
+                {...arrows.left}
+                onClick={() => onNodeSelected(nodeData.left)}
+              />
+            )}
+            {nodeData?.right && (
+              <Arrow
+                {...arrows.right}
+                onClick={() => onNodeSelected(nodeData.right)}
+              />
+            )}
             <OrbitControls
               maxZoom={1.5}
               minZoom={1.5}
