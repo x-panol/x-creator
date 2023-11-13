@@ -7,8 +7,11 @@ import { TextureLoader, BackSide } from "three";
 import Arrow from "@/features/Panorama/components/Arrow";
 import { arrows } from "@/features/Panorama/utils";
 import EqImageViewer from "@/features/Panorama/components/EqImageViewer";
-import { Box } from "@mui/material";
+import { Box, List, ListItem, Popper, Typography } from "@mui/material";
 import useCanvasStore from "@/store/useCanvasStore";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PolylineIcon from "@mui/icons-material/Polyline";
+import InfoSpot from "@/features/Panorama/components/InfoSpot";
 
 type NodeDataProps = {
   left?: string;
@@ -19,10 +22,14 @@ type NodeDataProps = {
   videoPath?: string;
 };
 
+type State = "poly" | "info" | "idle";
+
 const PanormaViewr = () => {
   const { selectedNode, nodes, edges, onNodeSelected } = useCanvasStore();
   const [nodeData, setNodeData] = React.useState<NodeDataProps>();
   const node = nodes.find((node) => node.id == selectedNode);
+  const [currentState, setCurrenState] = React.useState<State>("idle");
+  const popperRef = React.useRef(null);
 
   useEffect(() => {
     const left = edges.find(
@@ -51,17 +58,69 @@ const PanormaViewr = () => {
     TextureLoader,
     "https://pchen66.github.io/Panolens/examples/asset/textures/equirectangular/field.jpg"
   );
-  console.log(nodeData);
+
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(document.body);
+    popperRef.current.style.top = `${event.layerY + 50}px`;
+    popperRef.current.style.left = `${
+      event.layerX - popperRef.current.offsetWidth / 3
+    }px`;
+    console.log(event);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  // A png with transparency to use as the target sprite.
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
     <Box sx={{ width: "100%", height: "100%", display: "flex" }}>
+      <Box sx={{ width: "50px", mt: "40px" }}>
+        <List>
+          <ListItem
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+            onClick={() => setCurrenState("info")}
+          >
+            <LocationOnIcon />
+            <Typography variant="body2" fontSize=".7rem">
+              InfoSpot
+            </Typography>
+          </ListItem>
+          <ListItem
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+            onClick={() => setCurrenState("poly")}
+          >
+            <PolylineIcon />
+            <Typography variant="body2" fontSize=".7rem">
+              Poly
+            </Typography>
+          </ListItem>
+        </List>
+      </Box>
       <Canvas
         style={{
           width: "100%",
           padding: "10px",
           height: "100%",
           flex: "1 1 0",
+          paddingLeft: "5px",
         }}
       >
+        <InfoSpot onHover={handleClick} onMouseLeave={handleClose} />
         {nodeData && (
           <>
             <EqImageViewer image={node?.data.imageURL} />
@@ -108,6 +167,24 @@ const PanormaViewr = () => {
         }}
       >
         s
+      </Box>
+      <Box
+        id={id}
+        ref={popperRef}
+        sx={{ position: "absolute" }}
+        visibility={open ? "visible" : "hidden"}
+      >
+        <Box
+          sx={{
+            border: 1,
+            p: 1,
+            bgcolor: "background.paper",
+            borderWidth: "0",
+            borderRadius: "10px",
+          }}
+        >
+          The content of the Popper.
+        </Box>
       </Box>
     </Box>
   );

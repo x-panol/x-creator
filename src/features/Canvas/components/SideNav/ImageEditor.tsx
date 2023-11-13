@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import useCanvasStore from "@/store/useCanvasStore";
 
 const ImageEditor = () => {
@@ -16,6 +16,7 @@ const ImageEditor = () => {
         alignItems: "center",
       }}
     >
+      <Typography variant="subtitle2">{node?.id}</Typography>
       <TextField
         value={node?.data?.imageURL || ""}
         onChange={(e) => {

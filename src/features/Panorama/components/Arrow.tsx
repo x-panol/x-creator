@@ -15,7 +15,7 @@ function Arrow({
   const [hovered, setHovered] = useState(false);
   const { scale } = useSpring({
     scale: hovered ? 1.2 : 1,
-    config: { mass: 1, tension: 280, friction: 60 },
+    config: config.wobbly,
   });
 
   const colorMap = useLoader(TextureLoader, "./arrow.png");
@@ -31,15 +31,14 @@ function Arrow({
     <animated.mesh
       position={position}
       rotation={angle}
-      scale={scale.get()}
+      scale={scale}
       onPointerEnter={() => {
         document.body.style.cursor = "pointer";
-        setHovered(false);
+        setHovered(true);
       }}
       onPointerOut={() => {
-        console.log("hover");
-        document.body.style.cursor = "pointer";
-        setHovered(true);
+        document.body.style.cursor = "unset";
+        setHovered(false);
       }}
       onClick={() => {
         onClick();
