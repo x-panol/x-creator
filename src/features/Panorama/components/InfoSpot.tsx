@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import { TextureLoader } from "three";
 import { useSpring, animated, config } from "@react-spring/three";
 import { Popover, Tooltip, Typography } from "@mui/material";
-
+import { useThree } from "@react-three/fiber";
+import * as THREE from "three";
 const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
   const loader = new TextureLoader();
   const [hovered, setHovered] = useState(false);
@@ -11,10 +12,10 @@ const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
   const [newPosition, setNewPosition] = useState(position);
   const { scale } = useSpring({
     scale: hovered ? 6 : 4,
-    config: { mass: 1, tension: 280, friction: 60 },
+    config: { mass: 1, tension: 340, friction: 20 },
   });
   const meshRef = useRef();
-
+  const { camera } = useThree();
   const texture = loader.load("./information.png");
   return (
     <>
@@ -28,11 +29,16 @@ const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
           setGrabbed(false);
         }}
         onPointerEnter={(event) => {
-          console.log(event);
           setHovered(true);
           document.body.style.cursor = "pointer";
+          const vector = event.object.position.clone();
+          vector.project(camera);
+          const doc = document.getElementById("canvas");
+          const x = (vector.x * 0.5 + 0.5) * doc?.offsetWidth;
+          const y = (vector.y * -0.5 + 0.5) * doc?.offsetHeight;
 
-          onHover(event);
+          console.log(`Screen position: ${x}px, ${y}px`);
+          onHover({ x, y });
         }}
         onPointerMove={(event) => {
           if (grabbed) {

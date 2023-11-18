@@ -12,6 +12,7 @@ import useCanvasStore from "@/store/useCanvasStore";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PolylineIcon from "@mui/icons-material/Polyline";
 import InfoSpot from "@/features/Panorama/components/InfoSpot";
+import InfoSpotEditor from "@/features/Panorama/components/SideBar/InfoSpotEditor";
 
 type NodeDataProps = {
   left?: string;
@@ -59,9 +60,10 @@ const PanormaViewr = () => {
 
   const handleClick = (event) => {
     setAnchorEl(document.body);
-    popperRef.current.style.top = `${event.layerY + 50}px`;
+
+    popperRef.current.style.top = `${event.y - 80}px`;
     popperRef.current.style.left = `${
-      event.layerX - popperRef.current.offsetWidth / 3
+      event.x - popperRef.current.offsetWidth / 2 + 50
     }px`;
     console.log(event);
   };
@@ -83,6 +85,7 @@ const PanormaViewr = () => {
               flexDirection: "column",
               justifyContent: "center",
               alignContent: "center",
+              color: "white",
             }}
             onClick={() => setCurrenState("info")}
           >
@@ -102,7 +105,9 @@ const PanormaViewr = () => {
             }}
             onClick={() => setCurrenState("poly")}
           >
-            <PolylineIcon />
+            <PolylineIcon
+              sx={{ color: currentState == "info" ? "purple" : "white" }}
+            />
             <Typography variant="body2" fontSize=".7rem">
               Poly
             </Typography>
@@ -110,6 +115,7 @@ const PanormaViewr = () => {
         </List>
       </Box>
       <Canvas
+        id="canvas"
         style={{
           width: "100%",
           padding: "10px",
@@ -184,7 +190,7 @@ const PanormaViewr = () => {
           width: "300px",
         }}
       >
-        s
+        <InfoSpotEditor />
       </Box>
       <Box
         id={id}
