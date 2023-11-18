@@ -3,9 +3,12 @@ import { TextureLoader } from "three";
 import { useSpring, animated, config } from "@react-spring/three";
 import { Popover, Tooltip, Typography } from "@mui/material";
 
-const InfoSpot = ({ onHover, onMouseLeave }: any) => {
+const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
   const loader = new TextureLoader();
   const [hovered, setHovered] = useState(false);
+  const [grabbed, setGrabbed] = useState(false);
+
+  const [newPosition, setNewPosition] = useState(position);
   const { scale } = useSpring({
     scale: hovered ? 6 : 4,
     config: { mass: 1, tension: 280, friction: 60 },
@@ -16,8 +19,14 @@ const InfoSpot = ({ onHover, onMouseLeave }: any) => {
   return (
     <>
       <animated.sprite
-        position={[0, 0, -35]}
+        position={newPosition}
         scale={scale}
+        onPointerDown={() => {
+          setGrabbed(true);
+        }}
+        onPointerUp={() => {
+          setGrabbed(false);
+        }}
         onPointerEnter={(event) => {
           console.log(event);
           setHovered(true);
@@ -25,8 +34,20 @@ const InfoSpot = ({ onHover, onMouseLeave }: any) => {
 
           onHover(event);
         }}
+        onPointerMove={(event) => {
+          if (grabbed) {
+            event.stopPropagation();
+
+            const point = event.point;
+            point.normalize();
+
+            // Scale to radius
+            point.multiplyScalar(30);
+            setNewPosition(point);
+          }
+        }}
         onPointerLeave={(event) => {
-          console.log(event);
+          setGrabbed(false);
           setHovered(false);
           document.body.style.cursor = "unset";
           onMouseLeave();

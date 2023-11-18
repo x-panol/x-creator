@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Canvas, useLoader } from "@react-three/fiber";
+import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
 import { TextureLoader, BackSide } from "three";
@@ -54,12 +54,8 @@ const PanormaViewr = () => {
     });
   }, [selectedNode, edges]);
 
-  const colorMap = useLoader(
-    TextureLoader,
-    "https://pchen66.github.io/Panolens/examples/asset/textures/equirectangular/field.jpg"
-  );
-
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [infoSpots, setInfoSpots] = React.useState<any[]>([]);
 
   const handleClick = (event) => {
     setAnchorEl(document.body);
@@ -90,7 +86,9 @@ const PanormaViewr = () => {
             }}
             onClick={() => setCurrenState("info")}
           >
-            <LocationOnIcon />
+            <LocationOnIcon
+              sx={{ color: currentState == "info" ? "purple" : "white" }}
+            />
             <Typography variant="body2" fontSize=".7rem">
               InfoSpot
             </Typography>
@@ -120,10 +118,30 @@ const PanormaViewr = () => {
           paddingLeft: "5px",
         }}
       >
-        <InfoSpot onHover={handleClick} onMouseLeave={handleClose} />
+        {infoSpots.map((info) => (
+          <InfoSpot
+            key={info.toString()}
+            onHover={handleClick}
+            onMouseLeave={handleClose}
+            position={info}
+          />
+        ))}
         {nodeData && (
           <>
-            <EqImageViewer image={node?.data.imageURL} />
+            <EqImageViewer
+              image={node?.data.imageURL}
+              onClick={(event) => {
+                if (currentState === "info") {
+                  const point = event.point;
+                  point.normalize();
+
+                  // Scale to radius
+                  point.multiplyScalar(30);
+                  setCurrenState("idle");
+                  setInfoSpots([...infoSpots, point]);
+                }
+              }}
+            />
             {nodeData?.front && (
               <Arrow
                 {...arrows.front}
