@@ -16,3 +16,5 @@ export const arrows = {
         angle: [0, -Math.PI / 2, 0],
     },
 };
+
+export const getId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;

@@ -3,8 +3,11 @@ import { TextureLoader } from "three";
 import { useSpring, animated, config } from "@react-spring/three";
 import { Popover, Tooltip, Typography } from "@mui/material";
 import { useThree } from "@react-three/fiber";
-import * as THREE from "three";
-const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
+import useCanvasStore from "@/store/useCanvasStore";
+
+const InfoSpot = ({ onHover, onMouseLeave, position, id }: any) => {
+  const { onInfoSpotSelected } = useCanvasStore();
+
   const loader = new TextureLoader();
   const [hovered, setHovered] = useState(false);
   const [grabbed, setGrabbed] = useState(false);
@@ -14,9 +17,10 @@ const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
     scale: hovered ? 6 : 4,
     config: { mass: 1, tension: 340, friction: 20 },
   });
-  const meshRef = useRef();
+
   const { camera } = useThree();
   const texture = loader.load("./information.png");
+
   return (
     <>
       <animated.sprite
@@ -24,6 +28,7 @@ const InfoSpot = ({ onHover, onMouseLeave, position }: any) => {
         scale={scale}
         onPointerDown={() => {
           setGrabbed(true);
+          onInfoSpotSelected(id);
         }}
         onPointerUp={() => {
           setGrabbed(false);

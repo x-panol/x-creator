@@ -13,6 +13,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PolylineIcon from "@mui/icons-material/Polyline";
 import InfoSpot from "@/features/Panorama/components/InfoSpot";
 import InfoSpotEditor from "@/features/Panorama/components/SideBar/InfoSpotEditor";
+import { getId } from "@/features/Panorama/utils/index";
 
 type NodeDataProps = {
   left?: string;
@@ -26,7 +27,14 @@ type NodeDataProps = {
 type State = "poly" | "info" | "idle";
 
 const PanormaViewr = () => {
-  const { selectedNode, nodes, edges, onNodeSelected } = useCanvasStore();
+  const {
+    selectedNode,
+    nodes,
+    edges,
+    selectedInfoSpot,
+    onNodeSelected,
+    onNodeDataUpdated,
+  } = useCanvasStore();
   const [nodeData, setNodeData] = React.useState<NodeDataProps>();
   const node = nodes.find((node) => node.id == selectedNode);
   const [currentState, setCurrenState] = React.useState<State>("idle");
@@ -56,7 +64,9 @@ const PanormaViewr = () => {
   }, [selectedNode, edges]);
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const [infoSpots, setInfoSpots] = React.useState<any[]>([]);
+  const [infoSpots, setInfoSpots] = React.useState<
+    { position: any; id: string }[]
+  >([]);
 
   const handleClick = (event) => {
     setAnchorEl(document.body);
@@ -71,6 +81,7 @@ const PanormaViewr = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   // A png with transparency to use as the target sprite.
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -126,16 +137,17 @@ const PanormaViewr = () => {
       >
         {infoSpots.map((info) => (
           <InfoSpot
-            key={info.toString()}
+            key={info.id.toString()}
             onHover={handleClick}
             onMouseLeave={handleClose}
-            position={info}
+            position={info.position}
+            id={info.id}
           />
         ))}
         {nodeData && (
           <>
             <EqImageViewer
-              image={node?.data.imageURL}
+              image={node?.data.image}
               onClick={(event) => {
                 if (currentState === "info") {
                   const point = event.point;
@@ -144,7 +156,10 @@ const PanormaViewr = () => {
                   // Scale to radius
                   point.multiplyScalar(30);
                   setCurrenState("idle");
-                  setInfoSpots([...infoSpots, point]);
+                  const newSpot = { position: point, id: getId("info") };
+                  node?.data.infoSpot.push(newSpot);
+                  onNodeDataUpdated(node);
+                  setInfoSpots([newSpot, ...infoSpots]);
                 }
               }}
             />
@@ -190,7 +205,7 @@ const PanormaViewr = () => {
           width: "300px",
         }}
       >
-        <InfoSpotEditor />
+        {selectedInfoSpot && <InfoSpotEditor />}
       </Box>
       <Box
         id={id}

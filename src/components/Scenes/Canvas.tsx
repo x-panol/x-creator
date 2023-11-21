@@ -17,14 +17,13 @@ import useCanvasStore from "@/store/useCanvasStore";
 import VideoEditor from "@/features/Canvas/components/SideNav/VideoEditor";
 import AudoiEditor from "@/features/Canvas/components/SideNav/AudoiEditor";
 import ImageEditor from "@/features/Canvas/components/SideNav/ImageEditor";
+import { getId } from "@/features/Panorama/utils/index";
 
 const nodeTypes = {
   video: VideoNode,
   audio: AudioNode,
   image: ImageNode,
 };
-
-const getId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;
 
 const Canvas = () => {
   const {

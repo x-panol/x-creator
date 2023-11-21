@@ -17,14 +17,14 @@ const VideoEditor = () => {
       }}
     >
       <TextField
-        value={data.imageURL || ""}
+        value={data?.video || ""}
         onChange={(e) => {
           console.log(e);
         }}
         size="small"
         helperText="Please enter your name"
         id="demo-helper-text-aligned"
-        label="Image"
+        label="Video"
       />
     </Box>
   );

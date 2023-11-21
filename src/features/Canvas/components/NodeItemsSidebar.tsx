@@ -33,6 +33,7 @@ const NodeItems = () => {
         borderColor: "divider",
         width: "250px",
         overflow: "hidden",
+        color: "white",
       }}
     >
       <nav aria-label="main mailbox folders">
@@ -45,7 +46,7 @@ const NodeItems = () => {
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary="Image" />
+              <ListItemText primary="Image" color="white" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>

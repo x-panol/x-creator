@@ -18,10 +18,10 @@ const ImageEditor = () => {
     >
       <Typography variant="subtitle2">{node?.id}</Typography>
       <TextField
-        value={node?.data?.imageURL || ""}
+        value={node?.data?.image || ""}
         onChange={(e) => {
           if (node) {
-            node!.data["imageURL"] = e.target.value;
+            node!.data["image"] = e.target.value;
 
             onNodeDataUpdated(node);
           }

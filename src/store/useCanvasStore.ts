@@ -1,16 +1,30 @@
 import { Connection, Node, Edge, EdgeChange, NodeChange, OnConnect, OnEdgesChange, OnNodesChange, addEdge, applyEdgeChanges, applyNodeChanges } from "reactflow";
 import { create } from "zustand";
 
+export type InFoSpot = {
+    type: string
+    content: string
+}
 
+export interface NodeData extends Node {
+    data: {
+        infoSpot: InFoSpot[]
+        type: string
+        image?: string
+        video?: string
+    }
+}
 type CanvasStore = {
-    nodes: Node[];
+    nodes: NodeData[];
     edges: Edge[];
     selectedNode: string | undefined;
+    selectedInfoSpot: string | undefined;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     onNodeAdded: (node: Node) => void;
     onConnect: OnConnect;
     onNodeSelected: (key: string | undefined) => void;
+    onInfoSpotSelected: (key: string | undefined) => void;
     onNodeDataUpdated: (node: Node) => void;
 };
 
@@ -18,6 +32,12 @@ const useDemoStore = create<CanvasStore>((set, get) => ({
     nodes: [],
     edges: [],
     selectedNode: undefined,
+    selectedInfoSpot: undefined,
+    onInfoSpotSelected: (value: string | undefined) => {
+        set({
+            selectedInfoSpot: value,
+        });
+    },
     onNodesChange: (changes: NodeChange[]) => {
         set({
             nodes: applyNodeChanges(changes, get().nodes as any) as unknown as Node[],
@@ -40,7 +60,7 @@ const useDemoStore = create<CanvasStore>((set, get) => ({
         });
 
     },
-    onNodeDataUpdated: (newNode: Node) => {
+    onNodeDataUpdated: (newNode: NodeData) => {
         set({
             nodes: get().nodes.map((node) =>
                 node.id === newNode.id ? newNode : node
