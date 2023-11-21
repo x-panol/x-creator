@@ -10,7 +10,7 @@ const VideoEditor = () => {
   return (
     <Box
       sx={{
-        mt: 4,
+        mt: 2,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -22,7 +22,7 @@ const VideoEditor = () => {
           console.log(e);
         }}
         size="small"
-        helperText="Please enter your name"
+        helperText="Please enter Video URL"
         id="demo-helper-text-aligned"
         label="Video"
       />

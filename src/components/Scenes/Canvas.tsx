@@ -13,7 +13,7 @@ import "reactflow/dist/style.css";
 import VideoNode from "@/features/Canvas/components/Nodes/VideoNode";
 import AudioNode from "@/features/Canvas/components/Nodes/AudioNode";
 import ImageNode from "@/features/Canvas/components/Nodes/ImageNode";
-import useCanvasStore from "@/store/useCanvasStore";
+import useCanvasStore, { NodeData } from "@/store/useCanvasStore";
 import VideoEditor from "@/features/Canvas/components/SideNav/VideoEditor";
 import AudoiEditor from "@/features/Canvas/components/SideNav/AudoiEditor";
 import ImageEditor from "@/features/Canvas/components/SideNav/ImageEditor";
@@ -76,11 +76,16 @@ const Canvas = () => {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      const newNode = {
+      const newNode: NodeData = {
         id: getId("test"),
         type,
         position,
-        data: { label: `${type} node` },
+        data: {
+          infoSpot: [],
+          type: "image",
+          image: undefined,
+          video: undefined,
+        },
       };
 
       onNodeAdded(newNode);

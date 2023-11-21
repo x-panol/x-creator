@@ -8,7 +8,7 @@ import Arrow from "@/features/Panorama/components/Arrow";
 import { arrows } from "@/features/Panorama/utils";
 import EqImageViewer from "@/features/Panorama/components/EqImageViewer";
 import { Box, List, ListItem, Popper, Typography } from "@mui/material";
-import useCanvasStore from "@/store/useCanvasStore";
+import useCanvasStore, { InFoSpot } from "@/store/useCanvasStore";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PolylineIcon from "@mui/icons-material/Polyline";
 import InfoSpot from "@/features/Panorama/components/InfoSpot";
@@ -38,6 +38,8 @@ const PanormaViewr = () => {
   const [nodeData, setNodeData] = React.useState<NodeDataProps>();
   const node = nodes.find((node) => node.id == selectedNode);
   const [currentState, setCurrenState] = React.useState<State>("idle");
+  const [infoSpotContent, setInfoSpotContent] = React.useState<string>("");
+
   const popperRef = React.useRef(null);
 
   useEffect(() => {
@@ -67,21 +69,24 @@ const PanormaViewr = () => {
   const [infoSpots, setInfoSpots] = React.useState<
     { position: any; id: string }[]
   >([]);
+  const select = node?.data.infoSpot;
 
   const handleClick = (event) => {
     setAnchorEl(document.body);
-
+    setInfoSpotContent(event.content);
     popperRef.current.style.top = `${event.y - 80}px`;
-    popperRef.current.style.left = `${
-      event.x - popperRef.current.offsetWidth / 2 + 50
-    }px`;
-    console.log(event);
+    popperRef.current.style.left = `${event.x}px`;
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  useEffect(() => {
+    if (node) {
+      setInfoSpots(node.data.infoSpot);
+    }
+  }, [node]);
   // A png with transparency to use as the target sprite.
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -156,9 +161,15 @@ const PanormaViewr = () => {
                   // Scale to radius
                   point.multiplyScalar(30);
                   setCurrenState("idle");
-                  const newSpot = { position: point, id: getId("info") };
+                  const newSpot: InFoSpot = {
+                    position: point,
+                    id: getId("info"),
+                    content: "",
+                    type: "info",
+                  };
+                  console.log(node);
                   node?.data.infoSpot.push(newSpot);
-                  onNodeDataUpdated(node);
+                  onNodeDataUpdated(node!);
                   setInfoSpots([newSpot, ...infoSpots]);
                 }
               }}
@@ -220,9 +231,10 @@ const PanormaViewr = () => {
             bgcolor: "background.paper",
             borderWidth: "0",
             borderRadius: "10px",
+            color: "white",
           }}
         >
-          The content of the Popper.
+          {infoSpotContent}
         </Box>
       </Box>
     </Box>

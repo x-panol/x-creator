@@ -6,11 +6,16 @@ import { useThree } from "@react-three/fiber";
 import useCanvasStore from "@/store/useCanvasStore";
 
 const InfoSpot = ({ onHover, onMouseLeave, position, id }: any) => {
-  const { onInfoSpotSelected } = useCanvasStore();
+  const { onInfoSpotSelected, selectedInfoSpot, selectedNode, nodes } =
+    useCanvasStore();
 
   const loader = new TextureLoader();
   const [hovered, setHovered] = useState(false);
   const [grabbed, setGrabbed] = useState(false);
+  const node = nodes.find((node) => node.id == selectedNode);
+  const infoSpot = node?.data?.infoSpot?.find(
+    (infoSpot) => infoSpot.id == selectedInfoSpot
+  );
 
   const [newPosition, setNewPosition] = useState(position);
   const { scale } = useSpring({
@@ -42,8 +47,8 @@ const InfoSpot = ({ onHover, onMouseLeave, position, id }: any) => {
           const x = (vector.x * 0.5 + 0.5) * doc?.offsetWidth;
           const y = (vector.y * -0.5 + 0.5) * doc?.offsetHeight;
 
-          console.log(`Screen position: ${x}px, ${y}px`);
-          onHover({ x, y });
+          console.log(`Screen position: ${x}px, ${y}px ${infoSpot.content}`);
+          onHover({ x, y, content: infoSpot?.content });
         }}
         onPointerMove={(event) => {
           if (grabbed) {

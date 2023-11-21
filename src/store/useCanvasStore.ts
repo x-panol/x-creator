@@ -1,8 +1,11 @@
+import { Vector3 } from "@react-three/fiber";
 import { Connection, Node, Edge, EdgeChange, NodeChange, OnConnect, OnEdgesChange, OnNodesChange, addEdge, applyEdgeChanges, applyNodeChanges } from "reactflow";
 import { create } from "zustand";
 
 export type InFoSpot = {
     type: string
+    id: string
+    position: Vector3
     content: string
 }
 
@@ -25,7 +28,7 @@ type CanvasStore = {
     onConnect: OnConnect;
     onNodeSelected: (key: string | undefined) => void;
     onInfoSpotSelected: (key: string | undefined) => void;
-    onNodeDataUpdated: (node: Node) => void;
+    onNodeDataUpdated: (node: NodeData) => void;
 };
 
 const useDemoStore = create<CanvasStore>((set, get) => ({

@@ -10,7 +10,7 @@ const ImageEditor = () => {
   return (
     <Box
       sx={{
-        mt: 4,
+        mt: 2,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -27,7 +27,7 @@ const ImageEditor = () => {
           }
         }}
         size="small"
-        helperText="Please enter your name"
+        helperText="Please enter Image URL"
         id="demo-helper-text-aligned"
         label="Image"
       />
